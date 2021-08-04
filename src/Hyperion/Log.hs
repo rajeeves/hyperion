@@ -75,6 +75,6 @@ flush = hFlush stderr
 redirectToFile :: FilePath -> IO ()
 redirectToFile logFile = do
   createDirectoryIfMissing True (takeDirectory logFile)
-  h <- openFile logFile WriteMode
+  h <- openFile logFile AppendMode
   hDuplicateTo h stdout
   hDuplicateTo h stderr
