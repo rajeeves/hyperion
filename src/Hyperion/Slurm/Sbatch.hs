@@ -81,7 +81,7 @@ defaultSbatchOptions = SbatchOptions
 -- Convert 'SbatchOptions' to a string of options for @sbatch@
 sBatchOptionString :: SbatchOptions -> String
 sBatchOptionString SbatchOptions{..} =
-  unwords [ opt ++ " " ++ val | (opt, Just val) <- optPairs]
+  unwords [ opt ++ " " ++ val | (opt, Just val) <- optPairs] ++ " " ++ unwords [ flag | (flag, True) <- flagPairs]
   where
     optPairs =
       [ ("--job-name",        fmap T.unpack jobName)
@@ -100,6 +100,8 @@ sBatchOptionString SbatchOptions{..} =
       , ("--account",         fmap T.unpack account)
       , ("--qos",             fmap T.unpack qos)
       ]
+    flagPairs = 
+      [("--no-requeue",       True)]
 
 sbatchOutputParser :: Parser JobId
 sbatchOutputParser = JobById <$> ("Submitted batch job " *> takeWhile1 (not . isSpace) <* "\n")
